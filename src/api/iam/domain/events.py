@@ -12,8 +12,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
-from iam.domain.value_objects import Role
+from iam.domain.value_objects import GroupRole, TenantId, TenantRole, UserId
 
 
 @dataclass(frozen=True)
@@ -29,7 +30,7 @@ class MemberSnapshot:
     """
 
     user_id: str
-    role: Role
+    role: GroupRole
 
 
 @dataclass(frozen=True)
@@ -85,7 +86,7 @@ class MemberAdded:
 
     group_id: str
     user_id: str
-    role: Role
+    role: GroupRole
     occurred_at: datetime
 
 
@@ -104,7 +105,7 @@ class MemberRemoved:
 
     group_id: str
     user_id: str
-    role: Role
+    role: GroupRole
     occurred_at: datetime
 
 
@@ -125,8 +126,8 @@ class MemberRoleChanged:
 
     group_id: str
     user_id: str
-    old_role: Role
-    new_role: Role
+    old_role: GroupRole
+    new_role: GroupRole
     occurred_at: datetime
 
 
@@ -164,6 +165,42 @@ class TenantDeleted:
 
     tenant_id: str
     occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class TenantMemberAdded:
+    """Event raised when a user is added as a member to a tenant.
+
+    Attributes:
+        tenant_id: The ID of the tenant to which the member was added
+        user_id: The user added as a member to the tenant
+        role: The role the user is given within the tenant
+        added_by: The [optional] ID of the user that initiated this action
+        occurred_at: When this even occurred (UTC)
+    """
+
+    tenant_id: TenantId
+    user_id: UserId
+    role: TenantRole
+    occurred_at: datetime
+    added_by: Optional[UserId] = None
+
+
+@dataclass(frozen=True)
+class TenantMemberRemoved:
+    """Event raised when a user is removed as a member from a tenant.
+
+    Attributes:
+        tenant_id: The ID of the tenant from which the member was removed
+        user_id: The user removed as a member from the tenant
+        removed_by: The ID of the user that initiated this action
+        occurred_at: When this even occurred (UTC)
+    """
+
+    tenant_id: TenantId
+    user_id: UserId
+    occurred_at: datetime
+    removed_by: UserId
 
 
 @dataclass(frozen=True)
@@ -215,6 +252,8 @@ DomainEvent = (
     | MemberRoleChanged
     | TenantCreated
     | TenantDeleted
+    | TenantMemberAdded
+    | TenantMemberRemoved
     | APIKeyCreated
     | APIKeyRevoked
 )
