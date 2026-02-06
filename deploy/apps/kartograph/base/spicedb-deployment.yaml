@@ -60,16 +60,16 @@ spec:
           env:
             - name: SPICEDB_DATASTORE_ENGINE
               value: postgres
-            - name: SPICEDB_DATASTORE_CONN_URI
+            - name: datastore-uri
               valueFrom:
                 secretKeyRef:
                   name: kartograph-spicedb-credentials
-                  key: datastore-uri
-            - name: SPICEDB_GRPC_PRESHARED_KEY
+                  key: SPICEDB_DATASTORE_CONN_URI
+            - name: preshared-key
               valueFrom:
                 secretKeyRef:
                   name: kartograph-spicedb-credentials
-                  key: preshared-key
+                  key: SPICEDB_GRPC_PRESHARED_KEY
           livenessProbe:
             httpGet:
               path: /health

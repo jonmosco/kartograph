@@ -46,8 +46,8 @@ spec:
           env:
             - name: SPICEDB_DATASTORE_ENGINE
               value: postgres
-            - name: SPICEDB_DATASTORE_CONN_URI
+            - name: datastore-uri
               valueFrom:
                 secretKeyRef:
                   name: kartograph-spicedb-credentials
-                  key: datastore-uri
+                  key: SPICEDB_DATASTORE_CONN_URI
