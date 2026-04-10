@@ -52,7 +52,7 @@ services:
       start_period: 10s
 
   spicedb-migrate:
-    image: "authzed/spicedb"
+    image: "authzed/spicedb:v1.50.0"
     command: "migrate head"
     restart: "on-failure"
     networks:
@@ -67,7 +67,7 @@ services:
 
   # Transient service to ensure the 'spicedb' database exists
   db-init:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     networks:
       - kartograph
     env_file:
@@ -88,7 +88,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     networks:
       - kartograph
     restart: unless-stopped
